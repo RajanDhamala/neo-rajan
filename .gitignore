@@ -1,0 +1,34 @@
+
+# Neovim swap/backup/undo files
+*.swp
+*.swo
+*.swn
+*.un~
+*.tmp
+*.bak
+*.orig
+
+# Session files
+Session.vim
+sessions/
+
+# Undo / backup directories
+backup/
+undo/
+
+# Plugin directories (if using plugin manager that clones plugins)
+plugged/
+site/pack/
+pack/packer/
+lazy/
+
+# Compiled Lua files
+*.luac
+__pycache__/
+
+# Logs
+*.log
+
+# Temp files
+*.cache
+*.tags
