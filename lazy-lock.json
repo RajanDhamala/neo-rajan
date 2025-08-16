@@ -1,7 +1,9 @@
 {
+  "LuaSnip": { "branch": "master", "commit": "458560534a73f7f8d7a11a146c801db00b081df0" },
   "alpha-nvim": { "branch": "main", "commit": "2b3cbcdd980cae1e022409289245053f62fb50f6" },
   "bufferline.nvim": { "branch": "main", "commit": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3" },
-  "catppuccin": { "branch": "main", "commit": "3aaf3ab60221bca8edb1354e41bd514a22c89de2" },
+  "catppuccin": { "branch": "main", "commit": "8e626da0cbb663d0afbf8dc7fedd458231bd2198" },
+  "friendly-snippets": { "branch": "main", "commit": "572f5660cf05f8cd8834e096d7b4c921ba18e175" },
   "lazy.nvim": { "branch": "main", "commit": "6c3bda4aca61a13a9c63f1c1d1b16b9d3be90d7a" },
   "lualine.nvim": { "branch": "master", "commit": "b8c23159c0161f4b89196f74ee3a6d02cdc3a955" },
   "nvim-tree.lua": { "branch": "master", "commit": "f0e9951778802526b14c934f7bf746e1e0ae5ed0" },

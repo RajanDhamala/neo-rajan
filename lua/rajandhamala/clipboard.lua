@@ -1,9 +1,7 @@
--- clipboard.lua
--- Place this in your ~/.config/nvim/lua/core/ or similar
-
+-- ~/.config/nvim/lua/core/clipboard.lua
 local M = {}
 
--- Check for xclip
+-- Make sure xclip is available
 local handle = io.popen("which xclip")
 local result = handle:read("*a")
 handle:close()
@@ -13,16 +11,25 @@ if result == "" then
   return
 end
 
--- Use system clipboard for all yank, delete, change operations
-vim.opt.clipboard = "unnamedplus"
+-- Disable default unnamedplus so deletes stay local
+vim.opt.clipboard = ""
 
--- Optional keymaps for convenience
 local opts = { noremap = true, silent = true }
-vim.keymap.set("n", "<leader>y", [["+y]], opts)  -- yank to system clipboard
-vim.keymap.set("v", "<leader>y", [["+y]], opts)  -- visual mode yank
-vim.keymap.set("n", "<leader>p", [["+p]], opts)  -- paste from system clipboard
-vim.keymap.set("v", "<leader>p", [["+p]], opts)
 
-vim.notify("System clipboard (xclip) integrated successfully!", vim.log.levels.INFO)
+-- Map yanks to system clipboard automatically
+vim.keymap.set("n", "y", [["+y]], opts)
+vim.keymap.set("n", "Y", [["+Y]], opts)
+vim.keymap.set("v", "y", [["+y]], opts)
+
+-- Map pastes from system clipboard automatically
+vim.keymap.set("n", "p", [["+p]], opts)
+vim.keymap.set("n", "P", [["+P]], opts)
+vim.keymap.set("v", "p", [["+p]], opts)
+vim.keymap.set("v", "P", [["+P]], opts)
+
+-- Deletes remain normal (local) register
+-- dd, d, c are untouched
+
+vim.notify("Yank/paste now use system clipboard; deletes stay local.", vim.log.levels.INFO)
 
 return M

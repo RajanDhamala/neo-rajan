@@ -63,3 +63,4 @@ vim.api.nvim_set_keymap("n", "<leader>rn", ":set relativenumber!<CR>", opts)
 -- Buffer navigation with arrow keys
 vim.keymap.set("n", "<Right>", ":bnext<CR>", { noremap = true, silent = true })     -- right arrow → next buffer
 vim.keymap.set("n", "<Left>", ":bprevious<CR>", { noremap = true, silent = true }) -- left arrow → prev buffer
+
