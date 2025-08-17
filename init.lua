@@ -7,7 +7,8 @@ require("rajandhamala.lazy")
 require("rajandhamala.core.settings")
 require("rajandhamala.core.keymaps")
 require("rajandhamala.clipboard")
-
+require("rajandhamala.lsp")
+require("rajandhamala.cmp")
 -- Telescope setup
 require("telescope").setup{
   defaults = {

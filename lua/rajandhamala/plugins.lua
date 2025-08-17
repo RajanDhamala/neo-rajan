@@ -1,5 +1,30 @@
 -- plugins.lua
 return {
+  -- Floating command line and message UI (like LazyVim)
+  {
+    "folke/noice.nvim",
+    dependencies = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify" },
+    config = function()
+      require("noice").setup({
+        lsp = {
+          progress = { enabled = true },
+          hover = { enabled = true },
+          signature = { enabled = true },
+        },
+        presets = {
+          command_palette = true,
+          lsp_doc_border = true,
+        },
+      })
+    end,
+  },
+  -- Which-key for keybinding discovery
+  {
+    "folke/which-key.nvim",
+    config = function()
+      require("which-key").setup {}
+    end,
+  },
   -- Utility library
   { "nvim-lua/plenary.nvim" },
 
@@ -26,6 +51,15 @@ return {
       })
     end,
   },
+    -- Autocompletion
+    { "hrsh7th/nvim-cmp" },
+    { "hrsh7th/cmp-nvim-lsp" },
+    { "hrsh7th/cmp-buffer" },
+    { "hrsh7th/cmp-path" },
+    { "hrsh7th/cmp-cmdline" },
+    { "L3MON4D3/LuaSnip" },
+      { "saadparwaiz1/cmp_luasnip" },
+    { "saadparwaiz1/cmp_luasnip" },
 
   -- Status line
   {
@@ -34,11 +68,26 @@ return {
     config = function()
       require("lualine").setup({
         options = { theme = "auto", section_separators = "", component_separators = "" },
+        sections = {
+          lualine_a = { 'mode' },
+          lualine_b = { 'branch' },
+          lualine_c = { 'filename' },
+          lualine_x = { 'encoding', 'fileformat', 'filetype' },
+          lualine_y = { 'progress' },
+          lualine_z = { 'location' }
+        },
       })
     end,
   },
 
   -- Terminal
+          -- Autopairs for automatic bracket/quote closing
+          {
+            "windwp/nvim-autopairs",
+            config = function()
+              require("nvim-autopairs").setup {}
+            end,
+          },
   {
     "akinsho/toggleterm.nvim",
     config = function()
@@ -53,17 +102,23 @@ return {
   },
 
   -- Syntax highlighting
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    config = function()
-      require("nvim-treesitter.configs").setup({
-        highlight = { enable = true },
-        indent = { enable = true },
-      })
-    end,
-  },
-
+{
+  "nvim-treesitter/nvim-treesitter",
+  build = ":TSUpdate",
+  config = function()
+    require'nvim-treesitter.configs'.setup {
+      ensure_installed = { "lua" },   -- install Lua parser
+      highlight = {
+        enable = true,
+        disable = function(lang, buf)
+          local ok, _ = pcall(vim.treesitter.get_parser, buf, lang)
+          return not ok  -- fallback to default syntax if parser fails
+        end,
+      },
+      indent = { enable = true },
+    }
+  end,
+},
   -- Icons
   { "nvim-tree/nvim-web-devicons" },
 
@@ -142,4 +197,21 @@ dashboard.section.header.val = {
       vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])
     end,
   },
+{ "neovim/nvim-lspconfig" },
+{ "lewis6991/gitsigns.nvim",
+  config = function()
+    require("gitsigns").setup()
+  end,
+},
+{ "alexghergh/nvim-tmux-navigation",
+  config = function()
+    local nvim_tmux_nav = require('nvim-tmux-navigation')
+    vim.keymap.set('n', "<C-h>", nvim_tmux_nav.NvimTmuxNavigateLeft)
+    vim.keymap.set('n', "<C-j>", nvim_tmux_nav.NvimTmuxNavigateDown)
+    vim.keymap.set('n', "<C-k>", nvim_tmux_nav.NvimTmuxNavigateUp)
+    vim.keymap.set('n', "<C-l>", nvim_tmux_nav.NvimTmuxNavigateRight)
+    vim.keymap.set('n', "<C-\\>", nvim_tmux_nav.NvimTmuxNavigateLastActive)
+    vim.keymap.set('n', "<C-Space>", nvim_tmux_nav.NvimTmuxNavigateNext)
+  end,
+}
 }
