@@ -4,9 +4,6 @@ function m.setup()
   local map = vim.keymap.set
   local opts = { noremap = true, silent = true }
 
-  -- ===============================
-  -- General keybindings
-  -- ===============================
   map("n", "<leader>bd", ":bdelete<CR>", opts)
 
   -- Move cursor to END/START of the line in insert mode
