@@ -2,6 +2,7 @@
 return {
   {
     "ray-x/go.nvim",
+    version = "v0.11",
     ft = { "go", "gomod", "gowork", "gosum" }, -- lazy-load only for Go
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -13,7 +14,7 @@ return {
       lsp_keymaps = false,       -- we'll rely on Astro's keymaps
       trouble = false,
       lsp_codelens = true,
-      lsp_diag_hdlr = true,
+      lsp_diag_hdlr = false,     -- let AstroLSP own diagnostic handlers
       test_runner = "go",        -- or "gotests", "richgo"
       run_in_floaterm = true,
     },

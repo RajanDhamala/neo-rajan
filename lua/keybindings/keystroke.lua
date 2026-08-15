@@ -22,16 +22,8 @@ function m.setup()
   map("v", "<A-Down>", ":m '>+1<CR>gv=gv", opts)
 
   map("n", "<A-a>", "ggVG", opts)
-  -- your select all code
+  -- same as Ctrl + a in VS Code 
 
-  -- Select all lines in buffer
-  -- map("n", "<A-a>", function()
-  --   local bufnr = 0
-  --   local last_line = vim.api.nvim_buf_line_count(bufnr)
-  --   vim.api.nvim_buf_set_mark(bufnr, '<', 1, 0, {})
-  --   vim.api.nvim_buf_set_mark(bufnr, '>', last_line, 0, {})
-  --   vim.cmd('normal! gv')
-  -- end, opts)
 end
 
 return m

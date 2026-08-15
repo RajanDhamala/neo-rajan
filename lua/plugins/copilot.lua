@@ -1,20 +1,20 @@
 return {
   "zbirenbaum/copilot.lua",
+  version = "^3",
   cmd = "Copilot",
   event = "InsertEnter",
+  keys = { { "<leader>a", desc = "Toggle Copilot AI" } },
   config = function()
-    -- Find Node.js (fallback to system node if not found)
-    local node_path = vim.fn.exepath "node"
-    if node_path == "" then
-      node_path = vim.fn.expand "~/.nvm/versions/node/*/bin/node"
-      if vim.fn.filereadable(node_path) == 0 then
-        vim.notify("Node.js not found!  Copilot disabled.", vim.log.levels.ERROR)
-        return
-      end
+    -- Copilot requires Node.js 22+, so use the NVM-managed version directly.
+    -- Shell functions created by lazy-loaded NVM are not inherited by Neovim.
+    local node_path = vim.fn.expand "$HOME/.nvm/versions/node/v22.21.1/bin/node"
+    if vim.fn.executable(node_path) ~= 1 then
+      vim.notify("NVM Node.js 22 not found. Copilot is disabled.", vim.log.levels.ERROR)
+      return
     end
-    vim.g.copilot_node_command = node_path
 
     require("copilot").setup {
+      copilot_node_command = node_path,
       suggestion = {
         enabled = true,
         auto_trigger = true,
@@ -36,6 +36,19 @@ return {
       },
     }
 
+    -- Never draw Copilot ghost text over Blink's LSP completion menu.
+    local completion_group = vim.api.nvim_create_augroup("CopilotBlinkIntegration", { clear = true })
+    vim.api.nvim_create_autocmd("User", {
+      group = completion_group,
+      pattern = "BlinkCmpMenuOpen",
+      callback = function() vim.b.copilot_suggestion_hidden = true end,
+    })
+    vim.api.nvim_create_autocmd("User", {
+      group = completion_group,
+      pattern = "BlinkCmpMenuClose",
+      callback = function() vim.b.copilot_suggestion_hidden = false end,
+    })
+
     -- Helper for safe suggestion calls
     local function with_copilot(fn)
       return function()
@@ -45,27 +58,32 @@ return {
       end
     end
 
-    -- Insert mode keymaps
+    -- Simple insert mode keymap. Tab is coordinated with Blink separately.
     local map = vim.keymap.set
     local opts = { noremap = true, silent = true }
 
     map("i", "<C-l>", with_copilot(function(s) s.accept() end), opts)
-    map("i", "<C-j>", with_copilot(function(s) s.next() end), opts)
-    map("i", "<C-k>", with_copilot(function(s) s.prev() end), opts)
-    map("i", "<C-h>", with_copilot(function(s) s.dismiss() end), opts)
 
-    -- Leader mappings
-    map("n", "<leader>mt", function()
-      local ok, suggestion = pcall(require, "copilot.suggestion")
-      if not ok then return end
+    -- This is a process-level toggle. OFF tears down the plugin and force-stops
+    -- any remaining Copilot LSP client so it cannot keep consuming resources.
+    local function toggle_copilot()
+      local client = require "copilot.client"
+      local command = require "copilot.command"
 
-      if suggestion.is_visible() then
-        suggestion.dismiss()
-        vim.notify("Copilot OFF", vim.log.levels.INFO)
+      if client.is_disabled() then
+        command.enable()
+        vim.notify("Copilot ON — LSP process started", vim.log.levels.INFO)
       else
-        vim.notify("Copilot ON", vim.log.levels.INFO)
+        local active_clients = vim.lsp.get_clients { name = "copilot" }
+        command.disable()
+        for _, active_client in ipairs(active_clients) do
+          pcall(function() active_client:stop(true) end)
+        end
+        vim.notify("Copilot OFF — LSP process stopped", vim.log.levels.INFO)
       end
-    end, { desc = "Toggle Copilot" })
+    end
+
+    map("n", "<leader>a", toggle_copilot, { desc = "Toggle Copilot AI" })
 
     map("n", "<leader>mp", "<Cmd>Copilot panel<CR>", { desc = "Copilot Panel" })
   end,

@@ -1,7 +1,7 @@
 require("lazy").setup({
   {
     "AstroNvim/AstroNvim",
-    version = "^5", -- Remove version tracking to elect for nightly AstroNvim
+    version = "^6", -- Track stable AstroNvim v6 releases
     import = "astronvim.plugins",
     opts = { -- AstroNvim options must be set here with the `import` key
       mapleader = " ", -- This ensures the leader key must be configured before Lazy is set up
@@ -17,6 +17,9 @@ require("lazy").setup({
   -- Configure any other `lazy.nvim` configuration options here
   install = { colorscheme = { "astrotheme", "habamax" } },
   ui = { backdrop = 100 },
+  -- No configured plugin needs LuaRocks, so avoid bootstrapping an unused
+  -- secondary Lua toolchain and the corresponding health-check failure.
+  rocks = { enabled = false },
   performance = {
     rtp = {
       -- disable some rtp plugins, add more to your liking
