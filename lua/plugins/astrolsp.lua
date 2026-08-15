@@ -1,28 +1,46 @@
 return {
   "AstroNvim/astrolsp",
   opts = function(_, opts)
-    -- LSP server-specific configurations
-    -- opts.ensure_installed = { "tsserver", "pyright", "gopls" }  -- only LSPs you want
-    opts.automatic_installation = false  --  disable auto-install completely
+    opts.servers = require("astrocore").list_insert_unique(opts.servers or {}, {
+      "bashls",
+      "cssls",
+      "docker_compose_language_service",
+      "dockerls",
+      "gopls",
+      "html",
+      "jsonls",
+      "lua_ls",
+      "pyright",
+      "tailwindcss",
+      "ts_ls",
+      "yamlls",
+    })
+
     opts.config = vim.tbl_deep_extend("force", opts.config or {}, {
-      -- Python:  Optimized settings
       pyright = {
         settings = {
           python = {
             analysis = {
-              typeCheckingMode = "basic", -- Not "strict" (saves RAM)
-              autoSearchPaths = false,
-              useLibraryCodeForTypes = false,
-              diagnosticMode = "openFilesOnly", -- Only check open files
+              typeCheckingMode = "basic",
+              autoImportCompletions = true,
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              diagnosticMode = "openFilesOnly",
             },
           },
         },
       },
 
-      -- TypeScript: Memory-limited
-      tsserver = {
+      ts_ls = {
         init_options = {
-          maxTsServerMemory = 4096, -- Limit to 4GB
+          hostInfo = "neovim",
+          maxTsServerMemory = 4096,
+          preferences = {
+            includeCompletionsForModuleExports = true,
+            includeCompletionsForImportStatements = true,
+            includePackageJsonAutoImports = "on",
+            importModuleSpecifierPreference = "shortest",
+          },
         },
         settings = {
           typescript = {
@@ -40,50 +58,60 @@ return {
         },
       },
 
-      -- Go:  Reduced features
       gopls = {
         settings = {
           gopls = {
             gofumpt = true,
             usePlaceholders = true,
+            completeUnimported = true,
             analyses = {
-              unusedparams = false, -- Disable expensive checks
+              unusedparams = false,
               shadow = false,
             },
-            staticcheck = false, -- Disable on-save checks
+            staticcheck = false,
           },
         },
       },
 
-      -- ESLint: Lightweight
-      eslint = {
-        settings = {
-          workingDirectory = { mode = "auto" },
-        },
-      },
-
-      -- Tailwind:  Only load when config exists
-      tailwindcss = {
-        root_dir = function(fname)
-          local util = require("lspconfig.util")
-          return util.root_pattern(
-            "tailwind.config.js",
-            "tailwind.config.ts",
-            "tailwind.config.cjs"
-          )(fname)
-        end,
-      },
-
-      -- Lua: Keep default (already optimized)
-      lua_ls = {},
-
-      -- HTML/JSON/YAML: Lightweight
+      bashls = {},
+      cssls = {},
+      docker_compose_language_service = {},
+      dockerls = {},
       html = {},
       jsonls = {},
-      yamlls = {},
-
-      -- Docker: Single LSP
-      dockerls = {}
+      lua_ls = {},
+      tailwindcss = {},
+      yamlls = {
+        filetypes = { "yaml", "yaml.ansible", "yaml.docker-compose", "yaml.gitlab", "yaml.helm-values" },
+        settings = {
+          redhat = {
+            telemetry = {
+              enabled = false,
+            },
+          },
+          yaml = {
+            validate = true,
+            completion = true,
+            hover = true,
+            format = {
+              enable = true,
+            },
+            schemaStore = {
+              enable = true,
+            },
+            schemas = {
+              kubernetes = {
+                "k8s/**/*.yaml",
+                "k8s/**/*.yml",
+                "kubernetes/**/*.yaml",
+                "kubernetes/**/*.yml",
+                "manifests/**/*.yaml",
+                "manifests/**/*.yml",
+              },
+            },
+          },
+        },
+      },
     })
 
     return opts

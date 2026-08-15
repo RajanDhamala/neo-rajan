@@ -1,17 +1,20 @@
 return {
-  "williamboman/mason.nvim",
+  "WhoIsSethDaniel/mason-tool-installer.nvim",
   opts = function(_, opts)
-    -- AstroCommunity packs auto-install LSPs
-    -- Only add tools NOT covered by packs
-    opts.ensure_installed = vim.tbl_extend("force", opts.ensure_installed or {}, {
-      -- Formatters (not auto-installed by packs)
-      "prettierd",
-      "black",
-      "gofumpt",
-      "golines",
-      -- Linters (not auto-installed by packs)
-      "eslint_d",
-      "ruff",
+    opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed or {}, {
+      "bash-language-server",
+      "css-lsp",
+      "docker-compose-language-service",
+      "dockerfile-language-server",
+      "gopls",
+      "html-lsp",
+      "json-lsp",
+      "lua-language-server",
+      "pyright",
+      "tailwindcss-language-server",
+      "tree-sitter-cli",
+      "typescript-language-server",
+      "yaml-language-server",
     })
     return opts
   end,

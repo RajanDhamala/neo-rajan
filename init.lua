@@ -40,9 +40,7 @@ if not pcall(require, "lazy") then
   vim.fn.getchar()
   vim.cmd.quit()
 end
-
-vim.g.astrolsp_ignore = vim.g.astrolsp_ignore or {}
-table.insert(vim.g.astrolsp_ignore, "vtsls") 
+print("Lazy.nvim loaded from: " .. lazypath)
+print("Lazy.nvim version: " .. require("lazy.core.config").version)
 require("lazy_setup")
 require("polish")
-
