@@ -3,6 +3,7 @@ return {
   opts = function(_, opts)
     opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed or {}, {
       "bash-language-server",
+      "clangd",
       "css-lsp",
       "docker-compose-language-service",
       "dockerfile-language-server",
@@ -10,6 +11,7 @@ return {
       "html-lsp",
       "json-lsp",
       "lua-language-server",
+      "postgres-language-server",
       "pyright",
       "tailwindcss-language-server",
       "tree-sitter-cli",

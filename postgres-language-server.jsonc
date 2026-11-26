@@ -1,0 +1,8 @@
+{
+  "db": {
+    "disableConnection": true
+  },
+  "format": {
+    "enabled": true
+  }
+}
