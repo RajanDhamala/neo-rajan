@@ -10,6 +10,7 @@ local servers = {
   "jsonls",
   "lua_ls",
   "pyright",
+  "rust_analyzer",
   "tailwindcss",
   "ts_ls",
   "yamlls",

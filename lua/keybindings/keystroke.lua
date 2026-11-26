@@ -4,7 +4,30 @@ function m.setup()
   local map = vim.keymap.set
   local opts = { noremap = true, silent = true }
 
+  -- ===============================
+  -- General keybindings
+  -- ===============================
   map("n", "<leader>bd", ":bdelete<CR>", opts)
+
+  map("n", "<leader>rr", function()
+    for _, buffer in ipairs(vim.fn.getbufinfo({ bufloaded = 1 })) do
+      if buffer.name ~= "" and buffer.changed == 0 and vim.bo[buffer.bufnr].buftype == "" then
+        vim.cmd.checktime({ range = { buffer.bufnr } })
+      end
+    end
+
+    local names = vim.iter(vim.lsp.get_clients())
+      :map(function(client) return client.name end)
+      :unique()
+      :totable()
+
+    if #names == 0 then
+      vim.notify("No active language servers")
+      return
+    end
+
+    vim.cmd.lsp({ args = vim.list_extend({ "restart" }, names) })
+  end, { desc = "Restart all language servers" })
 
   -- Move cursor to END/START of the line in insert mode
   map("n", "<A-e>", "A", opts)
@@ -22,8 +45,16 @@ function m.setup()
   map("v", "<A-Down>", ":m '>+1<CR>gv=gv", opts)
 
   map("n", "<A-a>", "ggVG", opts)
-  -- same as Ctrl + a in VS Code 
+  -- your select all code
 
+  -- Select all lines in buffer
+  -- map("n", "<A-a>", function()
+  --   local bufnr = 0
+  --   local last_line = vim.api.nvim_buf_line_count(bufnr)
+  --   vim.api.nvim_buf_set_mark(bufnr, '<', 1, 0, {})
+  --   vim.api.nvim_buf_set_mark(bufnr, '>', last_line, 0, {})
+  --   vim.cmd('normal! gv')
+  -- end, opts)
 end
 
 return m

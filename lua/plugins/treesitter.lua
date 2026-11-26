@@ -6,7 +6,8 @@ return {
   ---@type AstroCoreOpts
   opts = {
     treesitter = {
-      highlight = true,
+      -- The SQL parser can read $1 placeholders as the start of a multiline string.
+      highlight = function(lang) return lang ~= "sql" end,
       indent = function(lang) return lang ~= "python" end,
       ensure_installed = {
         "css",
